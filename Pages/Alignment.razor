@@ -1,0 +1,49 @@
+﻿@page "/alignment"
+
+@inject HttpClient client
+@*<EditForm></EditForm>
+    <InputText id="name" @bind-Value="@AlignmentModel.Name" />*@
+<InputFile id="file" OnChange="HandleSelection" />
+
+@if (AlignmentModel.AlignmentError is null && AlignmentModel.RawSequences.Any())
+{
+    <table>
+        @foreach (var seq in @AlignmentModel.AlignedSequences)
+        {
+            <tr>
+                <th>
+                    @seq.Name
+                </th>
+                @foreach (var c in @seq.Sequence)
+                {
+                    <td>
+                        <span>@c</span>
+                    </td>
+                }
+            </tr>
+        }
+    </table>
+}
+
+@code {
+    private AlignmentModel AlignmentModel = new AlignmentModel();
+    private string status;
+    private IFileListEntry file;
+
+    private async Task HandleSelection(IFileListEntry[] files)
+    {
+        file = files.FirstOrDefault();
+        if (file != null)
+        {
+            AlignmentModel.FileName = file.Name;
+            AlignmentModel.RawSequences =
+                            (await FileUtilities.ReadFileContent(file.Data))
+                            .Split(Environment.NewLine)
+                            .Where(x =>!string.IsNullOrWhiteSpace(x))
+                            .ToHashSet();
+
+            await FileUtilities.WriteFileContents(AlignmentModel.ClustalOSequences, AlignmentModel.FileName);
+        }
+        this.StateHasChanged();
+    }
+}

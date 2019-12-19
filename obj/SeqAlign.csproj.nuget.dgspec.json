@@ -40,6 +40,12 @@
       },
       "frameworks": {
         "netcoreapp3.1": {
+          "dependencies": {
+            "BlazorInputFile": {
+              "target": "Package",
+              "version": "[0.1.0-preview-00002, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
