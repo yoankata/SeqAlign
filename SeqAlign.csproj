@@ -5,11 +5,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="TestFolder\**" />
+    <Content Remove="TestFolder\**" />
+    <EmbeddedResource Remove="TestFolder\**" />
+    <None Remove="TestFolder\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="README.md" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="BlazorInputFile" Version="0.1.0-preview-00002" />
+    <PackageReference Include="System.Collections" Version="4.3.0" />
   </ItemGroup>
 
 </Project>

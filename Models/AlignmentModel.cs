@@ -1,4 +1,5 @@
 ﻿using SeqAlign.Models;
+using SeqAlign.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,25 +13,46 @@ namespace SeqAlign.Models
     public class AlignmentModel
     {
         public string FileName { get; set; }
-        public string FilePath { get; set; }
-        public ICollection<string> ClustalOSequences => RawSequences.ToClustalOSequences();
+        public string FilePath { get; set; } = Directory.GetCurrentDirectory() + "/TestFolder/";
+        public ICollection<string> ClustalOSequences { get; set; } = new List<string>();
         public ICollection<string> RawSequences { get; set; } = new List<string>();
-        public ICollection<AlignedSequence> AlignedSequences => 
-            ClustalOSequences.Any() ? GetClustalWOlignment() : new List<AlignedSequence>();
+        public ICollection<AlignedSequence> AlignedSequences { get; set; } = new List<AlignedSequence>();
         public string AlignmentError { get; set; }
+
+        public AlignmentModel()
+        {
+
+        }
+        public AlignmentModel(List<string> rawSequences, string fileName)
+        {
+            if (rawSequences is null || !rawSequences.Any())
+                throw new ArgumentException("Raw Sequences must be provided!");
+
+            if (string.IsNullOrWhiteSpace(fileName))
+                throw new ArgumentException("File name must be provided!");
+
+            FileName = fileName;
+            RawSequences = rawSequences;
+            ClustalOSequences = RawSequences.ToClustalOSequences();
+            FileUtilities.WriteFileContents(ClustalOSequences, FileName);
+
+            AlignedSequences = GetClustalWOlignment();
+
+        }
 
         private ICollection<AlignedSequence> GetClustalWOlignment()
         {
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.CreateNoWindow = true;
-            startInfo.RedirectStandardOutput = true;
-            startInfo.RedirectStandardError = true;
-            startInfo.UseShellExecute = false;
-            startInfo.FileName = Directory.GetCurrentDirectory() 
-                + "/clustal-omega-1.2.2-win64/clustalo.exe";
-            startInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            startInfo.Arguments = "-i " + Directory.GetCurrentDirectory() + "/TestFolder/" + FileName;
-
+            ProcessStartInfo startInfo = new ProcessStartInfo()
+            {
+                CreateNoWindow = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                FileName = Directory.GetCurrentDirectory() + "/clustal-omega-1.2.2-win64/clustalo.exe",
+                WindowStyle = ProcessWindowStyle.Hidden,
+                Arguments = "-i " + FilePath + FileName
+            };
+            
             try
             {
                 using (var process = Process.Start(startInfo))
@@ -43,7 +65,7 @@ namespace SeqAlign.Models
             }
             catch(Exception e)
             {
-                AlignmentError = "Failed to start ClustalO process! It returned an error:" + e.Message + e.InnerException?.Message;
+                AlignmentError = "Failed to start ClustalO process! Fatal error:" + e.Message + e.InnerException?.Message;
                 return null;
             }
         }
@@ -57,8 +79,7 @@ public static class SequenceExt
         var clustalOSequences = new List<string>();
         foreach (var rawSequence in rawSequences)
         {
-            var trimmedSequence =
-                rawSequence
+            var trimmedSequence =rawSequence
                 .RemoveWhiteSpaces(); // cleanup spaces
             var noSpaces = trimmedSequence
                 .ToClustalOLetters(); // translate digits to letters so clustal can handle htem
@@ -96,7 +117,7 @@ public static class SequenceExt
 
     public static ICollection<AlignedSequence> SplitClustalOAlignmentSequences(this string rawSequence)
     {
-        var pattern = @">"; //.+\r\n[A-Z-]+\r\n
+        var pattern = @">";
         var sequences = Regex.Split(rawSequence, pattern, RegexOptions.Multiline);
         var splitSequences = sequences
             .Where(s => !string.IsNullOrWhiteSpace(s))

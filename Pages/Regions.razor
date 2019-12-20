@@ -1,0 +1,128 @@
+﻿@page "/regions"
+@inject Microsoft.JSInterop.IJSRuntime JS
+
+<h>Please select sequence files: <InputFile id="file" OnChange="HandleSelection" /></h>
+<br />
+@if (Model.Regions.Any())
+{
+    <table width="100%">
+        @foreach (var row in Model.Rows)
+        {
+            <tr>
+                @for (var i = Model.MinRegionStart;
+             i < Model.MaxRegionEnd;
+             i += (Model.MaxRegionEnd - Model.MinRegionStart) / 1000)
+                {
+                    <td>
+                        @if (i.PositionIsInRow(row))
+                        {
+                            <div class="alignment-match">
+                                <div class="tooltip">
+                                    <span class="tooltiptext">Postion: @i</span>
+                                    &nbsp;
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="alignment-no-match">
+                                <div class="tooltip">
+
+                                    <span class="tooltiptext">Position: @i</span>
+                                    &nbsp;
+                                </div>
+                            </div>
+                        }
+                    </td>
+                }
+            </tr>
+        }
+    </table>
+    <br />
+    <button class="btn btn-primary" @onclick="@DownloadRegionsStack">Download</button>
+    <br />
+
+}
+
+@code {
+    private RegionsModel Model = new RegionsModel();
+    private string status;
+    private IFileListEntry file;
+
+    private async Task HandleSelection(IFileListEntry[] files)
+    {
+        file = files.FirstOrDefault();
+        if (file != null)
+        {
+            Model.FileName = file.Name;
+            var regions =
+                            (await FileUtilities.ReadFileContent(file.Data))
+                            .Split(Environment.NewLine)
+                            .Where(x => !string.IsNullOrWhiteSpace(x));
+
+            Model.Regions = regions.Select((l, i) =>
+                    new Region
+                    {
+                        Id = i,
+                        Start = Decimal.Parse(SplitByWhiteSpace(l).ElementAt(0)),
+                        End = Decimal.Parse(SplitByWhiteSpace(l).ElementAt(1))
+                    }).ToHashSet();
+        }
+
+        this.StateHasChanged();
+    }
+
+    private async Task DownloadRegionsStack()
+    {
+        var stream = await ToMemoryStream(Model);
+        DownloadTxt(stream);
+    }
+
+    public static async Task WriteFileContents(ICollection<string> sequences, string fileName)
+    {
+        Directory.CreateDirectory(Directory.GetCurrentDirectory() + "/TestFolder").Empty();
+        using (var writer = new StreamWriter(Directory.GetCurrentDirectory() + $"/TestFolder/{fileName}"))
+        {
+            foreach (var line in sequences)
+            {
+                await writer.WriteLineAsync(line);
+            }
+        }
+    }
+
+    private async Task<MemoryStream> ToMemoryStream(RegionsModel model)
+    {
+        var rows = model.Rows;
+        var regions = rows.SelectMany((r, i) => r.Select(reg => new
+        {
+            RowId = i.ToString(),
+            Start = reg.Start.ToString(),
+            End = reg.End.ToString()
+        }));
+
+        var ms = new MemoryStream();
+
+        using (var sw = new StreamWriter(ms))
+            foreach (var line in regions)
+            {
+                var strLine = line.RowId + "\t" + line.Start + "\t" + line.End + Environment.NewLine;
+                //var bytes = strLine
+                await sw.WriteAsync(strLine);
+            }
+
+        return ms;
+    }
+
+    private void DownloadTxt(MemoryStream stream)
+    {
+        //Download the file in the browser.
+        JS.SaveAs($"RegionStack_{Guid.NewGuid()}.txt", stream.ToArray());
+    }
+
+    private IEnumerable<string> SplitByWhiteSpace(string s)
+    {
+        var whiteSpacePattern = @"(\t|\s)+";
+        var split = Regex.Split(s, whiteSpacePattern);
+        return split.Where(x => !string.IsNullOrWhiteSpace(x));
+    }
+}

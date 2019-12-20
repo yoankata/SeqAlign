@@ -4,13 +4,14 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using BlazorInputFile;
+using Microsoft.JSInterop;
 
 namespace SeqAlign.Utilities
 {
     public static class FileUtilities
     {
         public static async Task<string> ReadFileContent(Stream stream)
-        { 
+        {
             using (var reader = new StreamReader(stream))
             {
                 var fileContent = await reader.ReadToEndAsync();
@@ -23,16 +24,22 @@ namespace SeqAlign.Utilities
             }
         }
 
-        public static async Task WriteFileContents(ICollection<string> sequences, string fileName)
-        {                
+        public static void WriteFileContents(ICollection<string> sequences, string fileName)
+        {
             Directory.CreateDirectory(Directory.GetCurrentDirectory() + "/TestFolder").Empty();
             using (var writer = new StreamWriter(Directory.GetCurrentDirectory() + $"/TestFolder/{fileName}"))
-             {
+            {
                 foreach (var line in sequences)
                 {
-                    await writer.WriteLineAsync(line);
+                    writer.WriteLine(line);
                 }
             }
         }
+
+    public static ValueTask<object> SaveAs(this IJSRuntime js, string filename, byte[] data)
+        => js.InvokeAsync<object>(
+            "saveAsFile",
+            filename,
+            Convert.ToBase64String(data));
     }
 }
