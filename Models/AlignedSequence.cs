@@ -11,13 +11,9 @@ namespace SeqAlign.Models
 
         public AlignedSequence(string s)
         {
-            var split = Regex.Split(s, Environment.NewLine);
-
-            if (split.Length != 3) //3 to account for extra null string
-                throw new ArgumentException("Irregular sequence from ClustalO!");
-
-            Name = split[0];
-            Sequence = split[1];
+            var namePattern = @"^.*" + Environment.NewLine; //.+\r\n[A-Z-]+\r\n
+            Name = Regex.Match(s, namePattern).Value.TrimEnd(Environment.NewLine.ToCharArray());
+            Sequence = Regex.Replace(s, namePattern, "").Replace(Environment.NewLine, "");
         }
     }
 }

@@ -3,47 +3,69 @@
 @inject HttpClient client
 @*<EditForm></EditForm>
     <InputText id="name" @bind-Value="@AlignmentModel.Name" />*@
-<InputFile id="file" OnChange="HandleSelection" />
-
-@if (AlignmentModel.AlignmentError is null && AlignmentModel.RawSequences.Any())
-{
-    <table>
-        @foreach (var seq in @AlignmentModel.AlignedSequences)
+    <h>Please select sequence files: <InputFile id="file" OnChange="HandleSelection" /></h>
+            
+<table width="100%">
+    @if (string.IsNullOrWhiteSpace(Model.AlignmentError) && Model.AlignedSequences.Any())
+    {
+        @foreach (var seq in Model.AlignedSequences)
         {
             <tr>
-                <th>
-                    @seq.Name
-                </th>
+
+                <td>
+                    <div >@seq.Name</div>
+                </td>
+
                 @foreach (var c in @seq.Sequence)
                 {
                     <td>
-                        <span>@c</span>
+                        @if (c == '-')
+                        {
+                            <div class="alignment-no-match">&nbsp;</div>
+
+                        }
+                        else
+                        {
+                            <div class="alignment-match">&nbsp;</div>
+
+                        }
                     </td>
                 }
             </tr>
         }
-    </table>
-}
+    }
+    else
+    {
+        @if (!string.IsNullOrWhiteSpace(Model.AlignmentError))
+        {
+            <tr>
+                <td>
+                    @Model.AlignmentError
+                </td>
+            </tr>
+        }
+    }
+</table>
 
 @code {
-    private AlignmentModel AlignmentModel = new AlignmentModel();
-    private string status;
-    private IFileListEntry file;
+private AlignmentModel Model = new AlignmentModel();
+private string status;
+private IFileListEntry file;
 
-    private async Task HandleSelection(IFileListEntry[] files)
+private async Task HandleSelection(IFileListEntry[] files)
+{
+    file = files.FirstOrDefault();
+    if (file != null)
     {
-        file = files.FirstOrDefault();
-        if (file != null)
-        {
-            AlignmentModel.FileName = file.Name;
-            AlignmentModel.RawSequences =
-                            (await FileUtilities.ReadFileContent(file.Data))
-                            .Split(Environment.NewLine)
-                            .Where(x =>!string.IsNullOrWhiteSpace(x))
-                            .ToHashSet();
+        Model.FileName = file.Name;
+        Model.RawSequences =
+                        (await FileUtilities.ReadFileContent(file.Data))
+                        .Split(Environment.NewLine)
+                        .Where(x => !string.IsNullOrWhiteSpace(x))
+                        .ToHashSet();
 
-            await FileUtilities.WriteFileContents(AlignmentModel.ClustalOSequences, AlignmentModel.FileName);
-        }
-        this.StateHasChanged();
+        await FileUtilities.WriteFileContents(Model.ClustalOSequences, Model.FileName);
     }
+    this.StateHasChanged();
+}
 }

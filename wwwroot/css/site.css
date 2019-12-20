@@ -1,5 +1,18 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+table {
+    border-collapse: collapse;
+}
 
+th, td {
+    padding: 0;
+}
+
+.alignment-no-match{
+    background-color: antiquewhite
+}
+.alignment-match {
+    background-color: darkblue
+}
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
