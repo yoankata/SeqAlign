@@ -25,12 +25,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="wwwroot\images\genome-mining (2).jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="BlazorInputFile" Version="0.1.0-preview-00002" />
     <PackageReference Include="System.Collections" Version="4.3.0" />
   </ItemGroup>
