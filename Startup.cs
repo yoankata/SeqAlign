@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SeqAlign.Data;
 
 namespace SeqAlign
 {
@@ -26,7 +25,6 @@ namespace SeqAlign
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSingleton<WeatherForecastService>();
             if (!services.Any(x => x.ServiceType == typeof(HttpClient)))
             {
                 // Setup HttpClient for server side in a client side compatible fashion

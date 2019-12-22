@@ -44,7 +44,7 @@ namespace SeqAlign.Models
 
             while (regionsBucket.Any())
             {
-                var next = row.Last().FindNextClosestNonOverlappingRegion(regionsBucket);
+                var next = row.Last().FindClosestNonoverlappingRegion(regionsBucket);
                 if (next is null)
                 {
                     rows.Add(new List<Region>(row));
@@ -192,7 +192,7 @@ namespace SeqAlign.Models
 
     public static class RegionExt
     {
-        public static Region FindNextClosestNonOverlappingRegion(this Region region, List<Region> list)
+        public static Region FindClosestNonoverlappingRegion(this Region region, List<Region> list)
         {
             var nearest = list
                 .Where(r => r.Start > region.End) // non overlapping

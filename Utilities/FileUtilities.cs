@@ -12,18 +12,11 @@ namespace SeqAlign.Utilities
         {
             using (var reader = new StreamReader(stream))
             {
-                var fileContent = await reader.ReadToEndAsync();
-
-                //var content = new MultipartFormDataContent
-                //{ { new ByteArrayContent(Encoding.ASCII.GetBytes(fileLines)), "\"upload\"", file.Name }};
-
-                //await client.PostAsync("upload", content);
-                return fileContent;
+                return await reader.ReadToEndAsync();
             }
         }
 
-
-        public static async Task WriteFileContents(ICollection<string> sequences, string fileName)
+        public static async void WriteFileContents(ICollection<string> sequences, string fileName)
         {
             Directory.CreateDirectory(Directory.GetCurrentDirectory() + "/TestFolder").Empty();
             using (var writer = new StreamWriter(Directory.GetCurrentDirectory() + $"/TestFolder/{fileName}"))
@@ -31,14 +24,13 @@ namespace SeqAlign.Utilities
                 foreach (var line in sequences)
                 {
                     await writer.WriteLineAsync(line);
-}
+                }
             }
         }
 
-    public static ValueTask<object> SaveAs(this IJSRuntime js, string filename, byte[] data)
-        => js.InvokeAsync<object>(
-            "saveAsFile",
-            filename,
-            Convert.ToBase64String(data));
+        public static ValueTask<object> SaveAs(this IJSRuntime js, string filename, byte[] data)
+        {
+            return js.InvokeAsync<object>("saveAsFile", filename, Convert.ToBase64String(data));
+        }
     }
 }
