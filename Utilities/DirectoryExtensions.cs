@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace SeqAlign.Utilities
+﻿namespace SeqAlign.Utilities
 {
     public static class DirectoryExtensions
     {

@@ -5,9 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Requirements\**" />
     <Compile Remove="TestFolder\**" />
+    <Content Remove="Requirements\**" />
     <Content Remove="TestFolder\**" />
+    <EmbeddedResource Remove="Requirements\**" />
     <EmbeddedResource Remove="TestFolder\**" />
+    <None Remove="Requirements\**" />
     <None Remove="TestFolder\**" />
   </ItemGroup>
 
