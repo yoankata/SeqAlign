@@ -1,6 +1,7 @@
 ﻿@page "/alignment"
 
-@inject HttpClient client
+<h1>Multiple Sequence Alignment</h1>
+
 @if (status != Status.Done)
 {
     <Preloader />
@@ -53,26 +54,26 @@ else
     </table>
 }
 
-    @code {
-        private AlignmentModel Model = new AlignmentModel();
-        private Status status = Status.Done;
-        private IFileListEntry file;
+@code {
+    private AlignmentModel Model = new AlignmentModel();
+    private Status status = Status.Done;
+    private IFileListEntry file;
 
-        private async Task HandleSelection(IFileListEntry[] files)
+    private async Task HandleSelection(IFileListEntry[] files)
+    {
+        status = Status.Processing;
+        file = files.FirstOrDefault();
+        if (file != null)
         {
-            status = Status.Processing;
-            file = files.FirstOrDefault();
-            if (file != null)
-            {
-                var rawData = await FileUtilities.ReadFileContent(file.Data);
-                var pattern = @"(?=>)"; 
-                var rawSequences = Regex.Split(rawData, pattern, RegexOptions.Multiline)
-                                .Where(x => !string.IsNullOrWhiteSpace(x))
-                                .ToList();
+            var rawData = await FileUtilities.ReadFileContent(file.Data);
+            var pattern = @"(?=>)";
+            var rawSequences = Regex.Split(rawData, pattern, RegexOptions.Multiline)
+                            .Where(x => !string.IsNullOrWhiteSpace(x))
+                            .ToList();
 
-                Model = new AlignmentModel(rawSequences, file.Name);
-            }
-            status = Status.Done;
-            this.StateHasChanged();
+            Model = new AlignmentModel(rawSequences, file.Name);
         }
+        status = Status.Done;
+        this.StateHasChanged();
     }
+}

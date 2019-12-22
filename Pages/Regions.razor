@@ -2,24 +2,26 @@
 
 @inject Microsoft.JSInterop.IJSRuntime JS
 
+<h1>Region Stacking</h1>
+
 @if (status != Status.Done)
 {
     <Preloader />
 }
 else
 {
-<div class="form-group">
-    <label for="method">Please select stacking method: </label>
-    <select id="method" class="form-control" @bind="@Method">
-        @foreach (var method in Enum.GetValues(typeof(StackingMethod)))
-        {
-            <option value=@method>@method</option>
-        }
-    </select>
-    <label for="file">Please select input file: </label>
-    <br />
-    <InputFile id="files" OnChange="HandleSelection"/> 
-</div>
+    <div class="form-group">
+        <label for="method">Please select stacking method: </label>
+        <select id="method" class="form-control" @bind="@Method">
+            @foreach (var method in Enum.GetValues(typeof(StackingMethod)))
+            {
+                <option value=@method>@method</option>
+            }
+        </select>
+        <label for="file">Please select input file: </label>
+        <br />
+        <InputFile id="files" OnChange="HandleSelection" />
+    </div>
 
     <br />
     <br />
@@ -30,30 +32,30 @@ else
             {
                 <tr>
                     @for (var i = Model.MinRegionStart;
-                               i < Model.MaxRegionEnd;
-                               i += (Model.MaxRegionEnd - Model.MinRegionStart) / 150)
+                              i < Model.MaxRegionEnd;
+                              i += (Model.MaxRegionEnd - Model.MinRegionStart) / 150)
                     {
-                    <td>
-                        @if (i.PositionIsInRow(row))
-                        {
-                            <div class="alignment-match">
-                                <div class="tooltip">
-                                    <span class="tooltiptext">Postion: @i</span>
-                                    &nbsp;
+                        <td>
+                            @if (i.PositionIsInRow(row))
+                            {
+                                <div class="alignment-match">
+                                    <div class="tooltip">
+                                        <span class="tooltiptext">Postion: @i</span>
+                                        &nbsp;
+                                    </div>
                                 </div>
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="alignment-no-match">
-                                <div class="tooltip">
+                            }
+                            else
+                            {
+                                <div class="alignment-no-match">
+                                    <div class="tooltip">
 
-                                    <span class="tooltiptext">Position: @i</span>
-                                    &nbsp;
+                                        <span class="tooltiptext">Position: @i</span>
+                                        &nbsp;
+                                    </div>
                                 </div>
-                            </div>
-                        }
-                    </td>
+                            }
+                        </td>
                     }
                 </tr>
             }
