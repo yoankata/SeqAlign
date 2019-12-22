@@ -23,6 +23,7 @@ namespace SeqAlign.Models
         {
 
         }
+
         public AlignmentModel(List<string> rawSequences, string fileName)
         {
             if (rawSequences is null || !rawSequences.Any())
@@ -37,7 +38,6 @@ namespace SeqAlign.Models
             FileUtilities.WriteFileContents(ClustalOSequences, FileName);
 
             AlignedSequences = GetClustalWOlignment();
-
         }
 
         private ICollection<AlignedSequence> GetClustalWOlignment()

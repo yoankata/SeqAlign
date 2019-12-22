@@ -1,69 +1,78 @@
 ﻿@page "/alignment"
 
 @inject HttpClient client
-
-<h>Please select sequence files: <InputFile id="file" OnChange="HandleSelection" /></h>
-<br />            
-<table width="100%">
-    @if (string.IsNullOrWhiteSpace(Model.AlignmentError) && Model.AlignedSequences.Any())
-    {
-        @foreach (var seq in Model.AlignedSequences)
-        {
-            <tr>
-
-                <td>
-                    <div >@seq.Name</div>
-                </td>
-
-                @foreach (var c in @seq.Sequence)
-                {
-                    <td>
-                        @if (c == '-')
-                        {
-                            <div class="alignment-no-match">&nbsp;</div>
-
-                        }
-                        else
-                        {
-                            <div class="alignment-match">&nbsp;</div>
-
-                        }
-                    </td>
-                }
-            </tr>
-        }
-    }
-    else
-    {
-        @if (!string.IsNullOrWhiteSpace(Model.AlignmentError))
-        {
-            <tr>
-                <td>
-                    @Model.AlignmentError
-                </td>
-            </tr>
-        }
-    }
-</table>
-
-@code {
-    private AlignmentModel Model = new AlignmentModel();
-    private string status;
-    private IFileListEntry file;
-
-    private async Task HandleSelection(IFileListEntry[] files)
-    {
-        file = files.FirstOrDefault();
-        if (file != null)
-        {
-            var rawSequences =
-                            (await FileUtilities.ReadFileContent(file.Data))
-                            .Split(Environment.NewLine)
-                            .Where(x => !string.IsNullOrWhiteSpace(x))
-                            .ToHashSet(); //to hash set to avoid duplicates
-
-            Model = new AlignmentModel(rawSequences.ToList(), file.Name);
-        }
-        this.StateHasChanged();
-    }
+@if (status != Status.Done)
+{
+    <Preloader />
 }
+else
+{
+    <h>Please select sequence files: <InputFile id="file" OnChange="HandleSelection" /></h>
+    <br />
+
+    <table width="100%">
+        @if (string.IsNullOrWhiteSpace(Model.AlignmentError) && Model.AlignedSequences.Any())
+        {
+            @foreach (var seq in Model.AlignedSequences)
+            {
+                <tr>
+
+                    <td>
+                        <div>@seq.Name</div>
+                    </td>
+
+                    @foreach (var c in @seq.Sequence)
+                    {
+                        <td>
+                            @if (c == '-')
+                            {
+                                <div class="alignment-no-match">&nbsp;</div>
+
+                            }
+                            else
+                            {
+                                <div class="alignment-match">&nbsp;</div>
+
+                            }
+                        </td>
+                    }
+                </tr>
+            }
+        }
+        else
+        {
+            @if (!string.IsNullOrWhiteSpace(Model.AlignmentError))
+            {
+                <tr>
+                    <td>
+                        @Model.AlignmentError
+                    </td>
+                </tr>
+            }
+        }
+    </table>
+}
+
+    @code {
+        private AlignmentModel Model = new AlignmentModel();
+        private Status status = Status.Done;
+        private IFileListEntry file;
+
+        private async Task HandleSelection(IFileListEntry[] files)
+        {
+            status = Status.Processing;
+            file = files.FirstOrDefault();
+            if (file != null)
+            {
+                var rawSequences =
+                                (await FileUtilities.ReadFileContent(file.Data))
+                                .Split(Environment.NewLine)
+                                .Where(x => !string.IsNullOrWhiteSpace(x))
+                                .ToHashSet(); //to hash set to avoid duplicates
+
+                Model = new AlignmentModel(rawSequences.ToList(), file.Name);
+            }
+            status = Status.Done;
+            this.StateHasChanged();
+        }
+    }
