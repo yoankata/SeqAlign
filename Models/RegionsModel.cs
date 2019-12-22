@@ -37,8 +37,9 @@ namespace SeqAlign.Models
                 .ConvertAll(x => new Region(x.Id, x.Start, x.End));
 
             var firstRow = new List<Region>();
-            firstRow.Add(regionsBucket.OrderBy(x => x.Start).FirstOrDefault());
-            regionsBucket.Remove(regionsBucket.FirstOrDefault());
+            var firstRegion = regionsBucket.OrderBy(x => x.Start).FirstOrDefault();
+            firstRow.Add(firstRegion);
+            regionsBucket.Remove(firstRegion);
             rows.Add(firstRow);
             var row = rows.FirstOrDefault();
 
