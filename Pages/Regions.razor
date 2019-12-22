@@ -10,7 +10,7 @@
 }
 else
 {
-    <div class="form-group">
+    <div class="form-group" style="width: 30%">
         <label for="method">Please select stacking method: </label>
         <select id="method" class="form-control" @bind="@Method">
             @foreach (var method in Enum.GetValues(typeof(StackingMethod)))
