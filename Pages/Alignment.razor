@@ -64,13 +64,13 @@ else
             file = files.FirstOrDefault();
             if (file != null)
             {
-                var rawSequences =
-                                (await FileUtilities.ReadFileContent(file.Data))
-                                .Split(Environment.NewLine)
+                var rawData = await FileUtilities.ReadFileContent(file.Data);
+                var pattern = @"(?=>)"; 
+                var rawSequences = Regex.Split(rawData, pattern, RegexOptions.Multiline)
                                 .Where(x => !string.IsNullOrWhiteSpace(x))
-                                .ToHashSet(); //to hash set to avoid duplicates
+                                .ToList();
 
-                Model = new AlignmentModel(rawSequences.ToList(), file.Name);
+                Model = new AlignmentModel(rawSequences, file.Name);
             }
             status = Status.Done;
             this.StateHasChanged();
