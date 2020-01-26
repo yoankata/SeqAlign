@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SeqAlign.Models;
+using SeqAlign.Shared.Models;
 
 namespace UnitTests
 {

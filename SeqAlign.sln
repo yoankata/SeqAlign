@@ -5,11 +5,13 @@ VisualStudioVersion = 16.0.29613.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{0E64BA08-A85B-4B0E-9B45-AF53C84F3898}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "UnitTests\UnitTests.csproj", "{1B509F6F-C3D4-4BF2-852B-1DBB6F23415F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SeqAlign.UnitTests", "UnitTests\SeqAlign.UnitTests.csproj", "{1B509F6F-C3D4-4BF2-852B-1DBB6F23415F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SeqAlign", "Source\SeqAlign.csproj", "{31B54610-422A-4B22-858F-D84E373931B6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SeqAlign.ServerApp", "Source\SeqAlign.ServerApp.csproj", "{31B54610-422A-4B22-858F-D84E373931B6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{A533F251-B4CC-485D-9657-074DBDFC5AA1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeqAlign.Shared", "SeqAlign.Shared\SeqAlign.Shared.csproj", "{6730DDD0-5994-4FDD-B41B-3E8406AF4183}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,6 +27,10 @@ Global
 		{31B54610-422A-4B22-858F-D84E373931B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31B54610-422A-4B22-858F-D84E373931B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{31B54610-422A-4B22-858F-D84E373931B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6730DDD0-5994-4FDD-B41B-3E8406AF4183}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6730DDD0-5994-4FDD-B41B-3E8406AF4183}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6730DDD0-5994-4FDD-B41B-3E8406AF4183}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6730DDD0-5994-4FDD-B41B-3E8406AF4183}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,144 @@
+﻿@page "/mostdifferentoligomer"
+
+<h1>Most Dissimilar Oligomer</h1>
+
+<label for="ol">Oligomer Length:</label>
+<input id="ol" @bind-value="@OligomerLength" />
+<label for="sz">Set Size:</label>
+<input id="sz" @bind-value="@SetSize" />
+<button @onclick="()=> Update()">Generate Oligomer</button>
+
+
+@if (status != Status.Done)
+{
+    <Preloader />
+}
+else
+{
+    <p>Current Oligomer and its Complement:</p>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                @foreach (var nucleotide in @_mostDissimilarNucleotideString.ToCharArray())
+                {
+                    var color = nucleotide.GetColorValue();
+                    var style = "background-color:" + color;
+                    <td style=@style>@nucleotide</td>
+                }
+            </tr>
+        </tbody>
+    </table>
+    <table class="table">
+        <tbody>
+            <tr>
+                @foreach (var nucleotide in @_mostDissimilarNucleotideString.ToCharArray())
+                {
+                    <td style="border-top: none;"><div style="border-left: 2px dotted black;height: 50px;"></div> </td>
+                }
+
+            </tr>
+        </tbody>
+    </table>
+    <table class="table">
+        <tbody>
+            <tr>
+                @foreach (var nucleotide in @_mostDissimilarNucleotideString.Complement().ToCharArray())
+                {
+                    var color = nucleotide.GetColorValue();
+                    var style = "background-color:" + color;
+                    <td style=@style>@nucleotide</td>
+                }
+
+            </tr>
+        </tbody>
+    </table>
+
+    <p>Current Nucleotide Set:</p>
+
+    <table class="table">
+        <tbody>
+            @if (_nucleotideSet.Count() < 500)
+            {
+                @foreach (var nucleotideString in _nucleotideSet)
+                {
+                    <tr>
+                        @foreach (var nucleotide in nucleotideString.ToCharArray())
+                        {
+                            var color = nucleotide.GetColorValue();
+                            var style = "background-color:" + color + ";" +
+                                "border-top: 1px solid #dee2e6";
+                            <td style=@style>@nucleotide</td>
+                        }
+
+                    </tr>
+                }
+            }
+            else
+            {
+                @foreach (var nucleotide in Enum.GetValues(typeof(DNA)))
+                {
+                    <tr>
+                        @foreach (var position in _occurenceSet)
+                        {
+
+
+                            uint val;
+                            var numOccurence = position.TryGetValue((DNA)nucleotide, out val);
+                            var color = nucleotide.ToString().First().GetColorValue();
+                            var style = "background-color:" + color + ";" +
+                            "border-top: 1px solid #dee2e6";
+                            <td style=@style>@nucleotide: @val</td>
+                        }
+
+                    </tr>
+                }
+
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    public int OligomerLength { get; set; } = 6;
+    public int SetSize { get; set; } = 400;
+
+    private Status status = Status.Processing;
+    private IEnumerable<NucleotideString> _nucleotideSet;
+    private IEnumerable<Dictionary<DNA, uint>> _occurenceSet;
+    private NucleotideString _mostDissimilarNucleotideString;
+
+    public async Task Update()
+    {
+        ChangeStatus(Status.Processing);
+
+        await GenerateInputNucleotides();
+        await GenerateOccurenceDictionary();
+        await GenerateMostDifferentNucleotide();
+
+        ChangeStatus(Status.Done);
+        this.StateHasChanged();
+    }
+
+    private void ChangeStatus(Status status)
+    {
+        this.status = status;
+        this.StateHasChanged();
+    }
+
+    private async Task GenerateInputNucleotides()
+    {
+        _nucleotideSet = await RandomSetOfNuclotides(OligomerLength, SetSize);
+    }
+
+    private async Task GenerateOccurenceDictionary()
+    {
+        _occurenceSet = await _nucleotideSet.GetOccurenceDictionary();
+    }
+
+    private async Task GenerateMostDifferentNucleotide()
+    {
+        _mostDissimilarNucleotideString = await _nucleotideSet.GetMostDifferentFromNucleotideSet();
+    }
+}
