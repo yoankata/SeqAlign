@@ -14,7 +14,7 @@ namespace MostDissimilarOligomer
         {
             var oligomerLength = 6;
             var setSize = 400;
-            Console.WriteLine("Hello, Bioinformaticians!");
+            Console.WriteLine(Figgle.FiggleFonts.Standard.Render("Hello, Bioinformaticians!"));
             Console.WriteLine("Generating random nucleotide input set...");
             var nucleotideSet = await RandomSetOfNuclotides(oligomerLength, setSize);
             Console.WriteLine("Done generating input!\n\n");
