@@ -5,15 +5,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\**" />
     <Compile Remove="Requirements\**" />
     <Compile Remove="TestFolder\**" />
     <Compile Remove="Tests\**" />
+    <Content Remove="Models\**" />
     <Content Remove="Requirements\**" />
     <Content Remove="TestFolder\**" />
     <Content Remove="Tests\**" />
+    <EmbeddedResource Remove="Models\**" />
     <EmbeddedResource Remove="Requirements\**" />
     <EmbeddedResource Remove="TestFolder\**" />
     <EmbeddedResource Remove="Tests\**" />
+    <None Remove="Models\**" />
     <None Remove="Requirements\**" />
     <None Remove="TestFolder\**" />
     <None Remove="Tests\**" />
@@ -37,10 +41,6 @@
     <EmbeddedResource Include="wwwroot\images\sidebar1.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Models\" />
   </ItemGroup>
 
   <ItemGroup>
