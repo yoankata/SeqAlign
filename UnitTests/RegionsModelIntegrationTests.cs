@@ -3,7 +3,7 @@ using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SeqAlign.Shared.Models;
 
-namespace UnitTests
+namespace SeqAlign.UnitTests
 {
     [TestClass]
     public class RegionsModelIntegrationTests

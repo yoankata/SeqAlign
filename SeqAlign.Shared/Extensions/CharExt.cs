@@ -12,15 +12,15 @@ namespace SeqAlign.Shared.Extensions
             switch (character)
             {
                 case 'A':
-                    return "red";
+                    return "lightcoral";
                 case 'C':
-                    return "blue";
+                    return "lightblue";
                 case 'T':
-                    return "darkred";
+                    return "lightpink";
                 case 'G':
-                    return "darkblue";
+                    return "lightskyblue";
                 default:
-                    return "white";
+                    return "lavendarblush";
             }
         }
     }

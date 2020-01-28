@@ -1,11 +1,10 @@
-﻿using SeqAlign.Shared.Models;
-using SeqAlign.Shared.Utilities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using SeqAlign.Shared.Utilities;
 
 namespace SeqAlign.Shared.Models
 {
@@ -67,25 +66,24 @@ namespace SeqAlign.Shared.Models
             }
         }
     }
-}
 
-public static class SequenceExt
-{
-    public static string RemoveWhiteSpaces(this string rawSequence)
+    public static class SequenceExt
     {
-        return Regex.Replace(rawSequence, @"\s+", ""); 
-    }
+        public static string RemoveWhiteSpaces(this string rawSequence)
+        {
+            return Regex.Replace(rawSequence, @"\s+", ""); 
+        }
 
-    public static ICollection<AlignedSequence> SplitSequences(this string rawSequence)
-    {
-        var pattern = @"(?=>)";
-        var sequences = Regex.Split(rawSequence, pattern, RegexOptions.Multiline);
-        var splitSequences = sequences
-            .Where(s => !string.IsNullOrWhiteSpace(s))
-            .Select(s => new AlignedSequence(s))
-            .ToHashSet();
+        public static ICollection<AlignedSequence> SplitSequences(this string rawSequence)
+        {
+            var pattern = @"(?=>)";
+            var sequences = Regex.Split(rawSequence, pattern, RegexOptions.Multiline);
+            var splitSequences = sequences
+                .Where(s => !string.IsNullOrWhiteSpace(s))
+                .Select(s => new AlignedSequence(s))
+                .ToHashSet();
 
-        return splitSequences;
+            return splitSequences;
+        }
     }
 }
-

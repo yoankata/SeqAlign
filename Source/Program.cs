@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace SeqAlign
+namespace SeqAlign.ServerApp
 {
     public class Program
     {

@@ -8,10 +8,16 @@ namespace SeqAlign.Shared.Extensions
 {
     public static class NucleotideStringExt
     {
-        public static async Task<NucleotideString> GetMostDifferentFromNucleotideSet(this IEnumerable<NucleotideString> nucleotideStringSet)
+        public static async Task<NucleotideString> GetMostDifferentFromNucleotideSet(this IEnumerable<NucleotideString> nucleotideStrings)
         {
-            var dnaOccurenceDictionary = await nucleotideStringSet.GetOccurenceDictionary();
-            var strLength = nucleotideStringSet.First().Count();
+            if (nucleotideStrings.Count() < 2)
+                throw new ArgumentOutOfRangeException("Nucleotide set must be at least 2 in length!");
+            
+            if (nucleotideStrings.Any(s => s.Count() != nucleotideStrings.First().Count()))
+                throw new ArgumentOutOfRangeException("All nucleotide strings in a set must be the same length!");
+            
+            var dnaOccurenceDictionary = await nucleotideStrings.GetOccurenceDictionary();
+            var strLength = nucleotideStrings.First().Count();
             var mostDifferentDNALetters = new List<DNA>(strLength);
             foreach (var position in dnaOccurenceDictionary)
             {
@@ -30,7 +36,10 @@ namespace SeqAlign.Shared.Extensions
         public static Task<List<Dictionary<DNA, uint>>> GetOccurenceDictionary(this IEnumerable<NucleotideString> nucleotideStringSet)
         {
             if (nucleotideStringSet is null || !nucleotideStringSet.Any())
-                throw new ArgumentNullException("Nucleotide string set cannot be null or empty!");
+                throw new ArgumentNullException(nameof(nucleotideStringSet));
+
+            if (nucleotideStringSet.Any(s => s.Count() != nucleotideStringSet.First().Count()))
+                throw new ArgumentOutOfRangeException("Nucleotide string set cannot be null or empty!");
 
             var letterCount = nucleotideStringSet.First().Count();
             var dictionaryOfOccurence = new List<Dictionary<DNA, uint>>(letterCount);
@@ -54,7 +63,7 @@ namespace SeqAlign.Shared.Extensions
                 }
             }
 
-            return Task.FromResult<List<Dictionary<DNA, uint>>>(dictionaryOfOccurence);
+            return Task.FromResult(dictionaryOfOccurence);
         }
 
         public static NucleotideString Complement(this NucleotideString ns)
@@ -66,6 +75,7 @@ namespace SeqAlign.Shared.Extensions
             }
             return new NucleotideString(complement);
         }
+
         public static DNA Complement(this DNA n)
         {
             switch (n)

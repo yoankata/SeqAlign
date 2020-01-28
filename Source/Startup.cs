@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace SeqAlign
+namespace SeqAlign.ServerApp
 {
     public class Startup
     {
